@@ -48,7 +48,6 @@
     "extra": {
         "laravel": {
             "providers": [
-                "JsonFieldCast\\ServiceProvider"
             ]
         }
     },
