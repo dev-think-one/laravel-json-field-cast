@@ -4,6 +4,9 @@ namespace JsonFieldCast\Json;
 
 use Illuminate\Support\Arr;
 
+/**
+ * @property array $data
+ */
 trait HasDataArrayWithAttributes
 {
 
@@ -34,11 +37,11 @@ trait HasDataArrayWithAttributes
 
     /**
      * @param string $key
-     * @param null $default
+     * @param mixed $default
      *
      * @return array|\ArrayAccess|mixed
      */
-    public function getAttribute(string $key, $default = null)
+    public function getAttribute(string $key, mixed $default = null)
     {
         return Arr::get($this->data, $key, $default);
     }
