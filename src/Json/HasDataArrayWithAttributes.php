@@ -26,13 +26,14 @@ trait HasDataArrayWithAttributes
      * @param array $keys
      * @return array
      */
-    public function getRawData(array $keys = []): array
+    public function getRawData(array|string|null $keys = null): array
     {
-        if (!empty($keys)) {
-            return Arr::only($this->data, $keys);
+        if (is_null($keys)) {
+            return $this->data;
         }
+        $keys = (array) $keys;
 
-        return $this->data;
+        return Arr::only($this->data, $keys);
     }
 
     /**

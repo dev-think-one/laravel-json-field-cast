@@ -28,7 +28,8 @@ class MetaTextTest extends TestCase
             'text_meta' => [
                 'position' => 'developer',
                 'tags'     => [
-                    'php', 'laravel',
+                    'php',
+                    'laravel',
                 ],
             ],
         ]);
@@ -71,7 +72,6 @@ class MetaTextTest extends TestCase
     }
 
 
-
     /** @test */
     public function not_created_user_cast_field_to_object_if_not_null()
     {
@@ -108,7 +108,7 @@ class MetaTextTest extends TestCase
     /** @test */
     public function method_get_raw_data_except()
     {
-        $data = $this->user2->text_meta->getRawDataExcept(['position']);
+        $data = $this->user2->text_meta->getRawDataExcept([ 'position' ]);
         $this->assertArrayHasKey('tags', $data);
         $this->assertCount(2, $data['tags']);
         $this->assertEquals('laravel', $data['tags'][1]);
@@ -157,6 +157,25 @@ class MetaTextTest extends TestCase
         $this->assertArrayHasKey('position', $data);
         $this->assertEquals('developer', $data['position']);
         $this->assertCount(2, $data);
+    }
+
+    /** @test */
+    public function method_get_raw_data_with_string()
+    {
+        $data = $this->user2->text_meta->getRawData('tags.0');
+        $this->assertEmpty($data);
+        $this->assertIsArray($data);
+
+        $data = $this->user2->text_meta->getRawData('tags');
+        $this->assertIsArray($data);
+        $this->assertCount(1, $data);
+        $this->assertEquals('php', $data['tags'][0]);
+        $this->assertEquals('laravel', $data['tags'][1]);
+
+        $data = $this->user2->text_meta->getRawData('position');
+        $this->assertIsArray($data);
+        $this->assertCount(1, $data);
+        $this->assertEquals('developer', $data['position']);
     }
 
     /** @test */
