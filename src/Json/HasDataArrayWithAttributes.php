@@ -10,11 +10,6 @@ use Illuminate\Support\Arr;
 trait HasDataArrayWithAttributes
 {
 
-    /**
-     * @param array $data
-     *
-     * @return static
-     */
     public function setData(array $data = []): static
     {
         $this->data = $data;
@@ -22,10 +17,6 @@ trait HasDataArrayWithAttributes
         return $this;
     }
 
-    /**
-     * @param array $keys
-     * @return array
-     */
     public function getRawData(array|string|null $keys = null): array
     {
         if (is_null($keys)) {
@@ -36,33 +27,27 @@ trait HasDataArrayWithAttributes
         return Arr::only($this->data, $keys);
     }
 
-    /**
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return array|\ArrayAccess|mixed
-     */
-    public function getAttribute(string $key, mixed $default = null)
+    public function getRawDataExcept(array|string $keys = []): array
+    {
+        $keys = (array) $keys;
+
+        if (!empty($keys)) {
+            return array_diff_key($this->data, array_flip($keys));
+        }
+
+        return $this->data;
+    }
+
+    public function getAttribute(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->data, $key, $default);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public function hasAttribute(string $key): bool
     {
         return Arr::has($this->data, $key);
     }
 
-    /**
-     * @param string $key
-     * @param $value
-     *
-     * @return $this
-     */
     public function setAttribute(string $key, $value): static
     {
         Arr::set($this->data, $key, $value);
@@ -70,11 +55,6 @@ trait HasDataArrayWithAttributes
         return $this;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return $this
-     */
     public function removeAttribute(string $key): static
     {
         Arr::forget($this->data, $key);
@@ -82,9 +62,6 @@ trait HasDataArrayWithAttributes
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return $this->data;

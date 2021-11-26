@@ -21,17 +21,4 @@ abstract class AbstractMeta implements \JsonSerializable
         $this->data  = $data;
         $this->model = $model;
     }
-
-    /**
-     * @param array $keys
-     * @return array
-     */
-    public function getRawDataExcept(array $keys = []): array
-    {
-        if (!empty($keys)) {
-            return array_diff_key($this->data, array_flip($keys));
-        }
-
-        return $this->data;
-    }
 }
