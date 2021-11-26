@@ -184,4 +184,27 @@ class MetaJsonTest extends TestCase
         $user = User::find($this->user2->getKey());
         $this->assertNull($user->json_meta->getAttribute('tags'));
     }
+
+    /** @test */
+    public function is_empty()
+    {
+        /** @var User $user */
+        $user = User::create([
+            'name'      => __FUNCTION__,
+            'email'     => __FUNCTION__ . '@test.home',
+            'password'  => Str::random(),
+            'json_meta' => [
+                'position' => 'developer',
+                'tags'     => [
+                    'php',
+                    'laravel',
+                ],
+            ],
+        ]);
+
+        $this->assertFalse($user->json_meta->isEmpty());
+
+        $user->json_meta->setData([]);
+        $this->assertTrue($user->json_meta->isEmpty());
+    }
 }

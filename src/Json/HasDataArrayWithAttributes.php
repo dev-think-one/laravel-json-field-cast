@@ -9,7 +9,6 @@ use Illuminate\Support\Arr;
  */
 trait HasDataArrayWithAttributes
 {
-
     public function setData(array $data = []): static
     {
         $this->data = $data;
@@ -36,6 +35,11 @@ trait HasDataArrayWithAttributes
         }
 
         return $this->data;
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->data);
     }
 
     public function getAttribute(string $key, mixed $default = null): mixed

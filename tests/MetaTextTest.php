@@ -108,7 +108,7 @@ class MetaTextTest extends TestCase
     /** @test */
     public function method_get_raw_data_except()
     {
-        $data = $this->user2->text_meta->getRawDataExcept([ 'position' ]);
+        $data = $this->user2->text_meta->getRawDataExcept(['position']);
         $this->assertArrayHasKey('tags', $data);
         $this->assertCount(2, $data['tags']);
         $this->assertEquals('laravel', $data['tags'][1]);
@@ -139,7 +139,7 @@ class MetaTextTest extends TestCase
     /** @test */
     public function method_get_raw_data()
     {
-        $data = $this->user2->text_meta->getRawData([ 'tags' ]);
+        $data = $this->user2->text_meta->getRawData(['tags']);
         $this->assertArrayHasKey('tags', $data);
         $this->assertCount(2, $data['tags']);
         $this->assertEquals('laravel', $data['tags'][1]);
@@ -202,5 +202,28 @@ class MetaTextTest extends TestCase
 
         $user = User::find($this->user2->getKey());
         $this->assertNull($user->text_meta->getAttribute('tags'));
+    }
+
+    /** @test */
+    public function is_empty()
+    {
+        /** @var User $user */
+        $user = User::create([
+            'name'      => __FUNCTION__,
+            'email'     => __FUNCTION__ . '@test.home',
+            'password'  => Str::random(),
+            'text_meta' => [
+                'position' => 'developer',
+                'tags'     => [
+                    'php',
+                    'laravel',
+                ],
+            ],
+        ]);
+
+        $this->assertFalse($user->text_meta->isEmpty());
+
+        $user->text_meta->setData([]);
+        $this->assertTrue($user->text_meta->isEmpty());
     }
 }
