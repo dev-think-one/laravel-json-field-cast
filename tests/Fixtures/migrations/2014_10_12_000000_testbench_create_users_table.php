@@ -25,6 +25,9 @@ class TestbenchCreateUsersTable extends Migration
 
             $table->json('json_meta')->nullable();
             $table->text('text_meta')->nullable();
+
+            $table->string('content_type')->nullable();
+            $table->json('content')->nullable();
         });
     }
 

@@ -1,4 +1,5 @@
 # Laravel json field cast
+
 [![Packagist License](https://img.shields.io/packagist/l/yaroslawww/laravel-json-field-cast?color=%234dc71f)](https://github.com/yaroslawww/laravel-json-field-cast/blob/master/LICENSE.md)
 [![Packagist Version](https://img.shields.io/packagist/v/yaroslawww/laravel-json-field-cast)](https://packagist.org/packages/yaroslawww/laravel-json-field-cast)
 [![Build Status](https://scrutinizer-ci.com/g/yaroslawww/laravel-json-field-cast/badges/build.png?b=master)](https://scrutinizer-ci.com/g/yaroslawww/laravel-json-field-cast/build-status/master)
@@ -17,6 +18,8 @@ composer require yaroslawww/laravel-json-field-cast
 
 ## Usage
 
+### Out of the box
+
 ```injectablephp
 /**
  *  @property \JsonFieldCast\Json\SimpleJsonField $json_meta
@@ -24,11 +27,6 @@ composer require yaroslawww/laravel-json-field-cast
  */
 class MyModel extends Model
 {
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         //...
         'json_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
@@ -45,7 +43,109 @@ $myModel->json_meta->setAttribute('position', 'developer');
 $myModel->json_meta->removeAttribute('position');
 $myModel->json_meta->hasAttribute('position');
 $myModel->json_meta->getRawData(['position', 'my_array']);
-//...
+```
+
+### Custom castable objects
+
+```injectablephp
+namespace App\Casts;
+
+use JsonFieldCast\Casts\AbstractMeta;
+
+class FormMeta extends AbstractMeta
+{
+    protected function metaClass(): string
+    {
+        return \App\Casts\Json\FormMeta::class;
+    }
+}
+```
+
+```injectablephp
+namespace App\Casts\Json;
+
+use JsonFieldCast\Json\AbstractMeta;
+
+class FormMeta extends AbstractMeta
+{
+    public function myCustomMethod(): int {
+        return ((int) $this->getAttribute('foo.bar', 0)) + 25;
+    }
+}
+```
+
+```injectablephp
+/**
+ *  @property \App\Casts\Json\FormMeta $meta
+ */
+class Form extends Model
+{
+    protected $casts = [
+        'meta' => \App\Casts\FormMeta::class,
+    ];
+}
+
+
+$form = Form::find(123);
+$form->meta->getAttribute('foo.bar', 0);
+$form->meta->myCustomMethod();
+```
+
+### Dynamic castable objects
+
+```injectablephp
+namespace App\Casts;
+
+use JsonFieldCast\Casts\AbstractMeta;
+
+class FormMeta extends AbstractMeta
+{
+    protected function metaClass(): string
+    {
+        return \App\Casts\Json\AbstractFormMeta::class;
+    }
+}
+```
+
+```injectablephp
+namespace App\Casts\Json;
+
+use JsonFieldCast\Json\AbstractMeta;
+
+abstract class AbstractFormMeta extends AbstractMeta
+{
+   public static function getCastableClassByModel(Model $model, array $data = []): ?string
+    {
+        return ($model->meta_type && class_exists($model->meta_type))
+            ? $model->meta_type
+            : null;;
+    }
+}
+```
+
+```injectablephp
+/**
+ *  @property \App\Casts\Json\AbstractFormMeta $meta
+ */
+class Form extends Model
+{
+    protected $casts = [
+        'meta' => \App\Casts\FormMeta::class,
+    ];
+}
+
+
+$formContactUs = Form::create([
+    //...
+    'meta_type' => ContactUsMeta::class
+]);
+$formJobRequest = Form::create([
+    //...
+    'meta_type' => JobRequestMeta::class
+]);
+
+$formContactUs->meta instanceof ContactUsMeta::class // true
+$formJobRequest->meta instanceof JobRequestMeta::class // true
 ```
 
 ## Credits
