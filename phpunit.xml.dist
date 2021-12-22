@@ -23,7 +23,7 @@
         </report>
     </coverage>
     <testsuites>
-        <testsuite name="laravel-json-field-cast Test Suite">
+        <testsuite name="Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

@@ -2,35 +2,28 @@
 
 namespace JsonFieldCast\Tests;
 
-use Illuminate\Support\Facades\File;
 use JsonFieldCast\Tests\Fixtures\Models\User;
+use Orchestra\Testbench\Database\MigrateProcessor;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        array_map('unlink', glob(__DIR__ . '/../vendor/orchestra/testbench-core/laravel/database/migrations/*.php'));
-        // $this->artisan( 'vendor:publish', [ '--tag' => 'migrations', '--force' => true ] );
-        array_map(function ($f) {
-            File::copy($f, __DIR__ . '/../vendor/orchestra/testbench-core/laravel/database/migrations/' . basename($f));
-        }, glob(__DIR__ . '/Fixtures/migrations/*.php'));
-
-
-        $this->artisan('migrate', [ '--database' => 'testbench' ]);
-    }
-
     protected function getPackageProviders($app)
     {
-        return [
-        ];
+        return [];
     }
 
-    public function defineEnvironment($app)
+    protected function defineDatabaseMigrations()
     {
+        $this->loadLaravelMigrations();
+
+        $migrator = new MigrateProcessor($this, [
+            '--path'     => __DIR__ . '/Fixtures/migrations',
+            '--realpath' => true,
+        ]);
+        $migrator->up();
     }
+
 
     /**
      * Define environment setup.
