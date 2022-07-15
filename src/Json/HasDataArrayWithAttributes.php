@@ -2,7 +2,9 @@
 
 namespace JsonFieldCast\Json;
 
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 
 /**
  * @property array $data
@@ -45,6 +47,19 @@ trait HasDataArrayWithAttributes
     public function getAttribute(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->data, $key, $default);
+    }
+
+    public function getDateAttribute(string $key, ?Carbon $default = null): ?Carbon
+    {
+        $value = $this->getAttribute($key);
+        if (is_string($value) && !empty($value)) {
+            try {
+                return Carbon::parse($value);
+            } catch (InvalidFormatException) {
+            }
+        }
+
+        return $default;
     }
 
     public function hasAttribute(string $key): bool

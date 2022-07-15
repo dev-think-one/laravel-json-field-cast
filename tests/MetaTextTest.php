@@ -2,6 +2,7 @@
 
 namespace JsonFieldCast\Tests;
 
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use JsonFieldCast\Tests\Fixtures\Models\User;
 
@@ -31,6 +32,7 @@ class MetaTextTest extends TestCase
                     'php',
                     'laravel',
                 ],
+                'some_date' => '2020-03-05',
             ],
         ]);
         $this->assertTrue($this->user2->exists());
@@ -106,6 +108,16 @@ class MetaTextTest extends TestCase
     }
 
     /** @test */
+    public function method_get_date_attribute()
+    {
+        $this->assertNull($this->user2->text_meta->getDateAttribute('position'));
+        $this->assertNull($this->user2->text_meta->getDateAttribute('not_exists'));
+        $date = $this->user2->text_meta->getDateAttribute('some_date');
+        $this->assertInstanceOf(Carbon::class, $date);
+        $this->assertEquals('2020-03-05', $date->format('Y-m-d'));
+    }
+
+    /** @test */
     public function method_get_raw_data_except()
     {
         $data = $this->user2->text_meta->getRawDataExcept(['position']);
@@ -156,7 +168,7 @@ class MetaTextTest extends TestCase
         $this->assertEquals('laravel', $data['tags'][1]);
         $this->assertArrayHasKey('position', $data);
         $this->assertEquals('developer', $data['position']);
-        $this->assertCount(2, $data);
+        $this->assertCount(3, $data);
     }
 
     /** @test */
