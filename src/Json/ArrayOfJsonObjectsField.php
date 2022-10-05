@@ -77,7 +77,7 @@ class ArrayOfJsonObjectsField implements \JsonSerializable, \ArrayAccess, \Itera
 
     public function valid(): bool
     {
-        return isset($this->array[$this->iteratorPosition]);
+        return isset($this->data[$this->iteratorPosition]);
     }
 
     public function rewind(): void
