@@ -7,7 +7,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 abstract class AbstractMeta implements CastsAttributes
 {
-    public function get($model, $key, $value, $attributes): \JsonFieldCast\Json\AbstractMeta
+    public function get($model, $key, $value, $attributes): \JsonFieldCast\Json\AbstractMeta| \JsonFieldCast\Json\ArrayOfJsonObjectsField
     {
         $data  = json_decode($value, true);
         $data  = is_array($data) ? $data : [];

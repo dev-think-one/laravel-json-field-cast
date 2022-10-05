@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class TestbenchUpdateUsersTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -17,6 +16,9 @@ class TestbenchUpdateUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->json('json_meta')->nullable();
             $table->text('text_meta')->nullable();
+
+            $table->json('array_json_meta')->nullable();
+            $table->text('array_text_meta')->nullable();
 
             $table->string('content_type')->nullable();
             $table->json('content')->nullable();

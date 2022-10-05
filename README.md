@@ -25,6 +25,8 @@ composer require yaroslawww/laravel-json-field-cast
 /**
  *  @property \JsonFieldCast\Json\SimpleJsonField $json_meta
  *  @property \JsonFieldCast\Json\SimpleJsonField $text_meta
+ *  @property \JsonFieldCast\Json\ArrayOfJsonObjectsField $array_json_meta
+ *  @property \JsonFieldCast\Json\ArrayOfJsonObjectsField $array_text_meta
  */
 class MyModel extends Model
 {
@@ -32,6 +34,8 @@ class MyModel extends Model
         //...
         'json_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
         'text_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
+        'array_json_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
+        'array_text_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
     ];
 }
 

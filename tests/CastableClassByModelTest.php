@@ -9,7 +9,6 @@ use JsonFieldCast\Tests\Fixtures\Models\User;
 
 class CastableClassByModelTest extends TestCase
 {
-
     /** @test */
     public function get_different_classes_by_model()
     {
