@@ -34,7 +34,7 @@ class FileJsonField extends AbstractMeta
     }
 
     /**
-     * @param UploadedFile $file
+     * @param  UploadedFile  $file
      *
      * @return string
      */
@@ -42,13 +42,13 @@ class FileJsonField extends AbstractMeta
     {
         $suffix = ".{$file->extension()}";
 
-        return Str::limit(Str::slug(Str::beforeLast($file->getClientOriginalName(), $suffix)), 50, '') . $suffix;
+        return Str::limit(Str::slug(Str::beforeLast($file->getClientOriginalName(), $suffix)), 50, '').$suffix;
     }
 
     /**
-     * @param UploadedFile $file
-     * @param string|null $disk
-     * @param string $path
+     * @param  UploadedFile  $file
+     * @param  string|null  $disk
+     * @param  string  $path
      *
      * @return static
      */
@@ -63,7 +63,7 @@ class FileJsonField extends AbstractMeta
         $filePath = $file->storeAs(
             $path,
             $filename,
-            [ 'disk' => $disk ]
+            ['disk' => $disk]
         );
 
         $this->setData([
@@ -174,8 +174,12 @@ class FileJsonField extends AbstractMeta
         return null;
     }
 
-    public function fileInfo(): array
+    public function fileInfo(): ?array
     {
+        if (!$this->exists()) {
+            return null;
+        }
+
         return [
             static::$fieldName      => $this->getAttribute(static::$fieldName),
             static::$fieldDate      => $this->getAttribute(static::$fieldDate),
