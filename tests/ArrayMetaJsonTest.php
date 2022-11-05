@@ -94,7 +94,6 @@ class ArrayMetaJsonTest extends TestCase
         unset($meta[2]);
         $this->assertCount(1, $meta);
 
-        //
         $meta[] = 55;
         $this->assertCount(2, $meta);
         $this->assertCount(1, json_decode(json_encode($meta), true));
