@@ -173,4 +173,15 @@ class FileJsonField extends AbstractMeta
 
         return null;
     }
+
+    public function fileInfo(): array
+    {
+        return [
+            static::$fieldName      => $this->getAttribute(static::$fieldName),
+            static::$fieldDate      => $this->getAttribute(static::$fieldDate),
+            static::$fieldSize      => $this->getAttribute(static::$fieldSize),
+            static::$fieldExtension => $this->getAttribute(static::$fieldExtension),
+            'url'                   => $this->fileUrl(),
+        ];
+    }
 }

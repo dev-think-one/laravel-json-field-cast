@@ -87,4 +87,16 @@ class FileTextTest extends TestCase
         $this->assertFalse(file_exists($filePath));
         $this->assertFalse($this->user->text_file->exists());
     }
+
+    /** @test */
+    public function cast_get_file_info()
+    {
+        $this->user->json_file->storeUploadedFile(UploadedFile::fake()->image('My File.jpg'));
+        $this->user->save();
+        $this->user->refresh();
+
+        $fileInfo = $this->user->json_file->fileInfo();
+        $this->assertEquals($this->user->json_file->fileUrl(), $fileInfo['url']);
+        $this->assertEquals($this->user->json_file->fileName(), $fileInfo[FileJsonField::$fieldName]);
+    }
 }
