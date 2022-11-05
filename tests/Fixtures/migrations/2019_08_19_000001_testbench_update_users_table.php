@@ -17,6 +17,9 @@ class TestbenchUpdateUsersTable extends Migration
             $table->json('json_meta')->nullable();
             $table->text('text_meta')->nullable();
 
+            $table->json('json_file')->nullable();
+            $table->text('text_file')->nullable();
+
             $table->json('array_json_meta')->nullable();
             $table->text('array_text_meta')->nullable();
 

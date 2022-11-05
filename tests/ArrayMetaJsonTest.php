@@ -78,6 +78,41 @@ class ArrayMetaJsonTest extends TestCase
     }
 
     /** @test */
+    public function array_operation()
+    {
+        $this->assertInstanceOf(\JsonFieldCast\Json\ArrayOfJsonObjectsField::class, $this->user2->array_json_meta);
+        /** @var \JsonFieldCast\Json\ArrayOfJsonObjectsField $meta */
+        $meta = $this->user2->array_json_meta;
+
+        $this->assertTrue(isset($meta[1]));
+        $this->assertFalse(isset($meta[2]));
+        $meta[1] = 22;
+        $meta[]  = 33;
+        $this->assertEquals(22, $meta[1]);
+        $this->assertEquals(33, $meta[2]);
+        unset($meta[1]);
+        unset($meta[2]);
+        $this->assertCount(1, $meta);
+
+        //
+        $meta[] = 55;
+        $this->assertCount(2, $meta);
+        $this->assertCount(1, json_decode(json_encode($meta), true));
+    }
+
+    /** @test */
+    public function on_serialisation_clear_not_valid()
+    {
+        $this->assertInstanceOf(\JsonFieldCast\Json\ArrayOfJsonObjectsField::class, $this->user2->array_json_meta);
+        /** @var \JsonFieldCast\Json\ArrayOfJsonObjectsField $meta */
+        $meta = $this->user2->array_json_meta;
+
+        $meta[] = 55;
+        $this->assertCount(3, $meta);
+        $this->assertCount(2, json_decode(json_encode($meta), true));
+    }
+
+    /** @test */
     public function iterable()
     {
         $this->assertNotNull($this->user2->getRawOriginal('array_json_meta'));
