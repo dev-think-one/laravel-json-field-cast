@@ -5,6 +5,9 @@ namespace JsonFieldCast\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
+/**
+ * @psalm-suppress MissingTemplateParam
+ */
 abstract class AbstractMeta implements CastsAttributes
 {
     public function get($model, string $key, $value, array $attributes): \JsonFieldCast\Json\AbstractMeta|\JsonFieldCast\Json\ArrayOfJsonObjectsField

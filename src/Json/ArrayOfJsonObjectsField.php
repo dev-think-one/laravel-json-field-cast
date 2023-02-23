@@ -4,6 +4,9 @@ namespace JsonFieldCast\Json;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @psalm-suppress MissingTemplateParam
+ */
 class ArrayOfJsonObjectsField implements \JsonSerializable, \ArrayAccess, \Iterator, \Countable
 {
     protected Model $model;
