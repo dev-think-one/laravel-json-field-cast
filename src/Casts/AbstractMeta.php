@@ -12,7 +12,7 @@ abstract class AbstractMeta implements CastsAttributes
 {
     public function get($model, string $key, $value, array $attributes): \JsonFieldCast\Json\AbstractMeta|\JsonFieldCast\Json\ArrayOfJsonObjectsField
     {
-        $data = json_decode($value, true);
+        $data = is_string($value) ? json_decode($value, true): $value;
         $data = is_array($data) ? $data : [];
 
         return $this->newInstance(
