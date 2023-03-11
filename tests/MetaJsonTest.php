@@ -170,12 +170,26 @@ class MetaJsonTest extends TestCase
     }
 
     /** @test */
+    public function method_increment_return_error_if_not_numeric()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->user2->json_meta->increment('position');
+    }
+
+    /** @test */
     public function method_decrement()
     {
         $this->assertEquals(-1, $this->user2->json_meta->decrement('not_exists')->getAttribute('not_exists'));
         $this->assertEquals(-4.23, $this->user2->json_meta->decrement('not_exists_bar', 4.23)->getAttribute('not_exists_bar'));
         $this->assertEquals(2.2, $this->user2->json_meta->decrement('foo_number')->getAttribute('foo_number'));
         $this->assertEquals(-2.03, round($this->user2->json_meta->decrement('foo_number', 4.23)->getAttribute('foo_number'), 2));
+    }
+
+    /** @test */
+    public function method_decrement_return_error_if_not_numeric()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->user2->json_meta->decrement('position');
     }
 
     /** @test */
@@ -352,5 +366,39 @@ class MetaJsonTest extends TestCase
         $user = $this->user2->json_meta->fromMorph('');
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals($fakeUser->getKey(), $user->getKey());
+    }
+
+    /** @test */
+    public function from_morph_returns_defaultValue()
+    {
+        /** @var Model $defaultUser */
+        $defaultUser = User::create([
+            'name'      => __FUNCTION__,
+            'email'     => __FUNCTION__ . '@test.home',
+            'password'  => Str::random(),
+        ]);
+        $this->user2->json_meta->setData([
+            'user_wrong_class' => [
+                'id'    => '2',
+                'class' => 'fake',
+            ],
+            'user_wrong_id' => [
+                'id'    => '9999',
+                'class' => $defaultUser->getMorphClass(),
+            ],
+        ]);
+        $this->user2->save();
+
+        $user = $this->user2->json_meta->fromMorph('fake_user', $defaultUser);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($defaultUser->getKey(), $user->getKey());
+
+        $user = $this->user2->json_meta->fromMorph('user_wrong_class', $defaultUser);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($defaultUser->getKey(), $user->getKey());
+
+        $user = $this->user2->json_meta->fromMorph('user_wrong_id', $defaultUser);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($defaultUser->getKey(), $user->getKey());
     }
 }

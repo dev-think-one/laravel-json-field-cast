@@ -154,16 +154,21 @@ trait HasDataArrayWithAttributes
     {
         $id    = $this->getAttribute($key ? "{$key}.{$idKeyName}" : $idKeyName);
         $class = $this->getAttribute($key ? "{$key}.{$classKeyName}" : $classKeyName);
-        if ($id && $class) {
-            $class = Relation::getMorphedModel($class) ?? $class;
-            if (is_a($class, Model::class, true)) {
-                if ($model = $class::find($id)) {
-                    return $model;
-                }
-            }
+        if (!$id || !$class) {
+            return $default;
         }
 
-        return $default;
+        $class = Relation::getMorphedModel($class) ?? $class;
+        if (!is_a($class, Model::class, true)) {
+            return $default;
+        }
+
+        $model = $class::find($id);
+        if (!$model) {
+            return $default;
+        }
+
+        return $model;
     }
 
     public function toArray(): array
