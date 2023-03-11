@@ -32,7 +32,8 @@ class MetaTextTest extends TestCase
                     'php',
                     'laravel',
                 ],
-                'some_date' => '2020-03-05',
+                'some_date'      => '2020-03-05',
+                'formatted_date' => '04/02/2019',
             ],
         ]);
         $this->assertTrue($this->user2->exists());
@@ -118,6 +119,45 @@ class MetaTextTest extends TestCase
     }
 
     /** @test */
+    public function method_get_date_from_format_throw_exception_on_wrong_format()
+    {
+        $this->expectException(\Carbon\Exceptions\InvalidFormatException::class);
+        $this->assertNull($this->user2->text_meta->getDateTimeFromFormat('position'));
+    }
+
+    /** @test */
+    public function method_get_date_from_format_attribute()
+    {
+        $this->assertNull($this->user2->text_meta->getDateTimeFromFormat('not_exists'));
+        $date = $this->user2->text_meta->getDateTimeFromFormat('formatted_date', 'd/m/Y');
+        $this->assertInstanceOf(Carbon::class, $date);
+        $this->assertEquals('2019-02-04', $date->format('Y-m-d'));
+    }
+
+    /** @test */
+    public function method_get_date_from_formats_throw_exception_on_wrong_format()
+    {
+        $this->expectException(\Carbon\Exceptions\InvalidFormatException::class);
+        $this->assertNull($this->user2->text_meta->getDateTimeFromFormats('position', ['Y-m-d', 'd/m/y', 'd/m/Y']));
+    }
+
+    /** @test */
+    public function method_get_date_from_formats_throw_exception_on_wrong_format2()
+    {
+        $this->expectException(\Carbon\Exceptions\InvalidFormatException::class);
+        $this->assertNull($this->user2->text_meta->getDateTimeFromFormats('formatted_date', ['Y-m-d', 'd/m/y', 'D/m/Y']));
+    }
+
+    /** @test */
+    public function method_get_date_from_formats_attribute()
+    {
+        $this->assertNull($this->user2->text_meta->getDateTimeFromFormats('not_exists'));
+        $date = $this->user2->text_meta->getDateTimeFromFormats('formatted_date', ['Y-m-d', 'd/m/y', 'd/m/Y']);
+        $this->assertInstanceOf(Carbon::class, $date);
+        $this->assertEquals('2019-02-04', $date->format('Y-m-d'));
+    }
+
+    /** @test */
     public function method_get_raw_data_except()
     {
         $data = $this->user2->text_meta->getRawDataExcept(['position']);
@@ -168,7 +208,7 @@ class MetaTextTest extends TestCase
         $this->assertEquals('laravel', $data['tags'][1]);
         $this->assertArrayHasKey('position', $data);
         $this->assertEquals('developer', $data['position']);
-        $this->assertCount(3, $data);
+        $this->assertCount(4, $data);
     }
 
     /** @test */

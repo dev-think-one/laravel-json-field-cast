@@ -23,14 +23,14 @@ trait HasDataArrayWithAttributes
         if (is_null($keys)) {
             return $this->data;
         }
-        $keys = (array) $keys;
+        $keys = (array)$keys;
 
         return Arr::only($this->data, $keys);
     }
 
     public function getRawDataExcept(array|string $keys = []): array
     {
-        $keys = (array) $keys;
+        $keys = (array)$keys;
 
         if (!empty($keys)) {
             return array_diff_key($this->data, array_flip($keys));
@@ -47,19 +47,6 @@ trait HasDataArrayWithAttributes
     public function getAttribute(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->data, $key, $default);
-    }
-
-    public function getDateAttribute(string $key, ?Carbon $default = null): ?Carbon
-    {
-        $value = $this->getAttribute($key);
-        if (is_string($value) && !empty($value)) {
-            try {
-                return Carbon::parse($value);
-            } catch (InvalidFormatException) {
-            }
-        }
-
-        return $default;
     }
 
     public function hasAttribute(string $key): bool
@@ -79,6 +66,48 @@ trait HasDataArrayWithAttributes
         Arr::forget($this->data, $key);
 
         return $this;
+    }
+
+    public function getDateAttribute(string $key, ?Carbon $default = null): ?Carbon
+    {
+        $value = $this->getAttribute($key);
+        if (is_string($value) && !empty($value)) {
+            try {
+                return Carbon::parse($value);
+            } catch (InvalidFormatException) {
+            }
+        }
+
+        return $default;
+    }
+
+    public function getDateTimeFromFormat(string $key, string $format = 'Y-m-d H:i:s', ?Carbon $default = null): ?Carbon
+    {
+        $value = $this->getAttribute($key);
+        if (is_string($value) && !empty($value)) {
+            return Carbon::createFromFormat($format, $value);
+        }
+
+        return $default;
+    }
+
+    public function getDateTimeFromFormats(string $key, string|array $formats = 'Y-m-d H:i:s', ?Carbon $default = null): ?Carbon
+    {
+        $value = $this->getAttribute($key);
+        if (is_string($value) && !empty($value)) {
+            $formats = Arr::wrap($formats);
+            foreach ($formats as $format) {
+                try {
+                    return Carbon::createFromFormat($format, $value);
+                } catch (InvalidFormatException $e) {
+                }
+            }
+            if (isset($e) && ($e instanceof InvalidFormatException)) {
+                throw $e;
+            }
+        }
+
+        return $default;
     }
 
     public function toArray(): array
