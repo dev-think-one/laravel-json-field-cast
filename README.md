@@ -48,6 +48,16 @@ $myModel->json_meta->setAttribute('position', 'developer');
 $myModel->json_meta->removeAttribute('position');
 $myModel->json_meta->hasAttribute('position');
 $myModel->json_meta->getRawData(['position', 'my_array']);
+
+$myModel->json_meta->getDateAttribute('my-date'); // Carbon::parse()
+$myModel->json_meta->getDateTimeFromFormat('my-date', 'd/m/y');
+$myModel->json_meta->getDateTimeFromFormats('my-date', ['d/m/y', 'd/m/Y', 'Y-m-d']);
+
+$myModel->json_meta->inscremt('login_count');
+$myModel->json_meta->decrement('allowed_attempts');
+
+$myModel->json_meta->toMorph('user', $user);
+$user = $myModel->json_meta->fromMorph('user');
 ```
 
 ### Custom castable objects
