@@ -34,6 +34,7 @@ class MetaJsonTest extends TestCase
                 ],
                 'some_date'      => '2020-03-05',
                 'formatted_date' => '04/02/2019',
+                'foo_number'     => '3.2',
             ],
         ]);
         $this->assertTrue($this->user2->exists());
@@ -158,6 +159,24 @@ class MetaJsonTest extends TestCase
     }
 
     /** @test */
+    public function method_increment()
+    {
+        $this->assertEquals(1, $this->user2->json_meta->increment('not_exists')->getAttribute('not_exists'));
+        $this->assertEquals(4.23, $this->user2->json_meta->increment('not_exists_bar', 4.23)->getAttribute('not_exists_bar'));
+        $this->assertEquals(4.2, $this->user2->json_meta->increment('foo_number')->getAttribute('foo_number'));
+        $this->assertEquals(8.43, $this->user2->json_meta->increment('foo_number', 4.23)->getAttribute('foo_number'));
+    }
+
+    /** @test */
+    public function method_decrement()
+    {
+        $this->assertEquals(-1, $this->user2->json_meta->decrement('not_exists')->getAttribute('not_exists'));
+        $this->assertEquals(-4.23, $this->user2->json_meta->decrement('not_exists_bar', 4.23)->getAttribute('not_exists_bar'));
+        $this->assertEquals(2.2, $this->user2->json_meta->decrement('foo_number')->getAttribute('foo_number'));
+        $this->assertEquals(-2.03, round($this->user2->json_meta->decrement('foo_number', 4.23)->getAttribute('foo_number'), 2));
+    }
+
+    /** @test */
     public function method_get_raw_data_except()
     {
         $data = $this->user2->json_meta->getRawDataExcept([ 'position' ]);
@@ -208,7 +227,7 @@ class MetaJsonTest extends TestCase
         $this->assertEquals('laravel', $data['tags'][1]);
         $this->assertArrayHasKey('position', $data);
         $this->assertEquals('developer', $data['position']);
-        $this->assertCount(4, $data);
+        $this->assertCount(5, $data);
     }
 
     /** @test */
