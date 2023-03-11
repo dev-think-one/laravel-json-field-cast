@@ -3,6 +3,8 @@
 namespace JsonFieldCast\Json;
 
 use Carbon\Exceptions\InvalidFormatException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
@@ -138,6 +140,30 @@ trait HasDataArrayWithAttributes
         }
 
         return $this->setAttribute($key, $value - $amount);
+    }
+
+    public function toMorph(string $key, Model $value, string $idKeyName = 'id', string $classKeyName = 'class'): static
+    {
+        $this->setAttribute($key ? "{$key}.{$idKeyName}" : $idKeyName, $value->getKey());
+        $this->setAttribute($key ? "{$key}.{$classKeyName}" : $classKeyName, $value->getMorphClass());
+
+        return $this;
+    }
+
+    public function fromMorph(string $key = '', ?Model $default = null, string $idKeyName = 'id', string $classKeyName = 'class'): ?Model
+    {
+        $id    = $this->getAttribute($key ? "{$key}.{$idKeyName}" : $idKeyName);
+        $class = $this->getAttribute($key ? "{$key}.{$classKeyName}" : $classKeyName);
+        if ($id && $class) {
+            $class = Relation::getMorphedModel($class) ?? $class;
+            if (is_a($class, Model::class, true)) {
+                if ($model = $class::find($id)) {
+                    return $model;
+                }
+            }
+        }
+
+        return $default;
     }
 
     public function toArray(): array

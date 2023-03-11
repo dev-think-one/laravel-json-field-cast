@@ -3,6 +3,8 @@
 namespace JsonFieldCast\Tests;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use JsonFieldCast\Tests\Fixtures\Models\User;
 
@@ -277,5 +279,78 @@ class MetaJsonTest extends TestCase
 
         $user->json_meta->setData([]);
         $this->assertTrue($user->json_meta->isEmpty());
+    }
+
+    /** @test */
+    public function to_morph()
+    {
+        /** @var Model $fakeUser */
+        $fakeUser = User::create([
+            'name'     => __FUNCTION__,
+            'email'    => __FUNCTION__ . '@test.home',
+            'password' => Str::random(),
+        ]);
+
+        $this->user2->json_meta->toMorph('user', $fakeUser);
+        $this->user2->save();
+        Arr::get($this->user2->json_meta->getRawData(), 'user.id', $fakeUser->getKey());
+        Arr::get($this->user2->json_meta->getRawData(), 'user.class', $fakeUser->getMorphClass());
+
+        $this->user2->json_meta->toMorph('user1', $fakeUser, 'idFoo', 'classBar');
+        $this->user2->save();
+        Arr::get($this->user2->json_meta->getRawData(), 'user1.idFoo', $fakeUser->getKey());
+        Arr::get($this->user2->json_meta->getRawData(), 'user1.classBar', $fakeUser->getMorphClass());
+
+        $this->user2->json_meta->toMorph('', $fakeUser);
+        $this->user2->save();
+        Arr::get($this->user2->json_meta->getRawData(), 'id', $fakeUser->getKey());
+        Arr::get($this->user2->json_meta->getRawData(), 'class', $fakeUser->getMorphClass());
+    }
+
+    /** @test */
+    public function from_morph()
+    {
+        /** @var Model $fakeUser */
+        $fakeUser = User::create([
+            'name'      => __FUNCTION__,
+            'email'     => __FUNCTION__ . '@test.home',
+            'password'  => Str::random(),
+            'json_meta' => [
+                'position' => 'developer',
+
+                'some_date'      => '2020-03-05',
+                'formatted_date' => '04/02/2019',
+                'foo_number'     => '3.2',
+            ],
+        ]);
+
+        $this->user2->json_meta->setData([
+            'user' => [
+                'id'    => $fakeUser->getKey(),
+                'class' => $fakeUser->getMorphClass(),
+            ],
+            'user1' => [
+                'idFoo'    => $fakeUser->getKey(),
+                'classBar' => $fakeUser->getMorphClass(),
+            ],
+            'id'    => $fakeUser->getKey(),
+            'class' => $fakeUser->getMorphClass(),
+        ]);
+        $this->user2->save();
+
+        $user = $this->user2->json_meta->fromMorph('user');
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($fakeUser->getKey(), $user->getKey());
+
+        $user = $this->user2->json_meta->fromMorph('user1');
+        $this->assertNull($user);
+
+        $user = $this->user2->json_meta->fromMorph('user1', null, 'idFoo', 'classBar');
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($fakeUser->getKey(), $user->getKey());
+
+        $user = $this->user2->json_meta->fromMorph('');
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertEquals($fakeUser->getKey(), $user->getKey());
     }
 }
