@@ -161,6 +161,26 @@ class MetaTextTest extends TestCase
     }
 
     /** @test */
+    public function method_set_date_attribute()
+    {
+        $date = Carbon::now()->addDays(2);
+
+        $this->assertNull($this->user2->text_meta->getDateAttribute('new_date'));
+
+        $this->user2->text_meta->setDateAttribute('new_date', $date);
+        $this->assertEquals($date->format('YmdHis'), $this->user2->text_meta->getDateAttribute('new_date')->format('YmdHis'));
+
+        $this->user2->text_meta->setDate('new_date2', $date);
+        $this->assertEquals($date->format('YmdHis'), $this->user2->text_meta->getDateAttribute('new_date2')->format('YmdHis'));
+
+        $this->user2->text_meta->setDate('new_formatted_date', $date, 'y/m/d');
+        $this->assertEquals($date->format('YmdHis'), $this->user2->text_meta->getDateTimeFromFormats('new_formatted_date', 'y/m/d')->format('YmdHis'));
+
+        $this->user2->text_meta->setNow('now_date', 'Y,m,d,H');
+        $this->assertEquals(Carbon::now()->format('YmdH'), $this->user2->text_meta->getDateTimeFromFormats('now_date', 'Y,m,d,H')->format('YmdH'));
+    }
+
+    /** @test */
     public function method_increment()
     {
         $this->assertEquals(1, $this->user2->text_meta->increment('not_exists')->getAttribute('not_exists'));

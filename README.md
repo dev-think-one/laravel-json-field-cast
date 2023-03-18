@@ -49,6 +49,9 @@ $myModel->json_meta->removeAttribute('position');
 $myModel->json_meta->hasAttribute('position');
 $myModel->json_meta->getRawData(['position', 'my_array']);
 
+$myModel->json_meta->setDate('my-date', \Carbon\Carbon::now());
+$myModel->json_meta->setDate('my-date', \Carbon\Carbon::now(), 'd/m/y');
+$myModel->json_meta->setNow('my-date', 'd/m/y');
 $myModel->json_meta->getDateAttribute('my-date'); // Carbon::parse()
 $myModel->json_meta->getDateTimeFromFormat('my-date', 'd/m/y');
 $myModel->json_meta->getDateTimeFromFormats('my-date', ['d/m/y', 'd/m/Y', 'Y-m-d']);

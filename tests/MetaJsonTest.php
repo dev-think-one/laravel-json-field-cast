@@ -111,6 +111,7 @@ class MetaJsonTest extends TestCase
         $this->assertFalse($this->user2->json_meta->hasAttribute('position.2'));
     }
 
+
     /** @test */
     public function method_get_date_attribute()
     {
@@ -158,6 +159,26 @@ class MetaJsonTest extends TestCase
         $date = $this->user2->json_meta->getDateTimeFromFormats('formatted_date', ['Y-m-d', 'd/m/y', 'd/m/Y']);
         $this->assertInstanceOf(Carbon::class, $date);
         $this->assertEquals('2019-02-04', $date->format('Y-m-d'));
+    }
+
+    /** @test */
+    public function method_set_date_attribute()
+    {
+        $date = Carbon::now()->addDays(2);
+
+        $this->assertNull($this->user2->json_meta->getDateAttribute('new_date'));
+
+        $this->user2->json_meta->setDateAttribute('new_date', $date);
+        $this->assertEquals($date->format('YmdHis'), $this->user2->json_meta->getDateAttribute('new_date')->format('YmdHis'));
+
+        $this->user2->json_meta->setDate('new_date2', $date);
+        $this->assertEquals($date->format('YmdHis'), $this->user2->json_meta->getDateAttribute('new_date2')->format('YmdHis'));
+
+        $this->user2->json_meta->setDate('new_formatted_date', $date, 'y/m/d');
+        $this->assertEquals($date->format('YmdHis'), $this->user2->json_meta->getDateTimeFromFormats('new_formatted_date', 'y/m/d')->format('YmdHis'));
+
+        $this->user2->json_meta->setNow('now_date', 'Y,m,d,H');
+        $this->assertEquals(Carbon::now()->format('YmdH'), $this->user2->json_meta->getDateTimeFromFormats('now_date', 'Y,m,d,H')->format('YmdH'));
     }
 
     /** @test */

@@ -8,6 +8,21 @@ use Illuminate\Support\Carbon;
 
 trait HasDateAttributes
 {
+    public function setDateAttribute(string $key, ?\DateTimeInterface $datetime = null, string $format = 'Y-m-d H:i:s'): static
+    {
+        return $this->setAttribute($key, $datetime?->format($format));
+    }
+
+    public function setDate(string $key, ?\DateTimeInterface $datetime = null, string $format = 'Y-m-d H:i:s'): static
+    {
+        return $this->setDateAttribute($key, $datetime, $format);
+    }
+
+    public function setNow(string $key, string $format = 'Y-m-d H:i:s'): static
+    {
+        return $this->setDateAttribute($key, \Carbon\Carbon::now(), $format);
+    }
+
     public function getDateAttribute(string $key, ?Carbon $default = null): ?Carbon
     {
         $value = $this->getAttribute($key);
