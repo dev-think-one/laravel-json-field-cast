@@ -2,9 +2,9 @@
 
 namespace JsonFieldCast\Json;
 
+use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
 
 trait HasDateAttributes
 {
@@ -20,7 +20,7 @@ trait HasDateAttributes
 
     public function setNow(string $key, string $format = 'Y-m-d H:i:s'): static
     {
-        return $this->setDateAttribute($key, \Carbon\Carbon::now(), $format);
+        return $this->setDateAttribute($key, Carbon::now(), $format);
     }
 
     public function getDateAttribute(string $key, ?Carbon $default = null): ?Carbon
