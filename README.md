@@ -1,32 +1,32 @@
 # Laravel json field cast
 
-[![Packagist License](https://img.shields.io/packagist/l/yaroslawww/laravel-json-field-cast?color=%234dc71f)](https://github.com/yaroslawww/laravel-json-field-cast/blob/master/LICENSE.md)
-[![Packagist Version](https://img.shields.io/packagist/v/yaroslawww/laravel-json-field-cast)](https://packagist.org/packages/yaroslawww/laravel-json-field-cast)
-[![Total Downloads](https://img.shields.io/packagist/dt/yaroslawww/laravel-json-field-cast)](https://packagist.org/packages/yaroslawww/laravel-json-field-cast)
-[![Build Status](https://scrutinizer-ci.com/g/yaroslawww/laravel-json-field-cast/badges/build.png?b=master)](https://scrutinizer-ci.com/g/yaroslawww/laravel-json-field-cast/build-status/master)
-[![Code Coverage](https://scrutinizer-ci.com/g/yaroslawww/laravel-json-field-cast/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/yaroslawww/laravel-json-field-cast/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yaroslawww/laravel-json-field-cast/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yaroslawww/laravel-json-field-cast/?branch=master)
+![Packagist License](https://img.shields.io/packagist/l/think.studio/laravel-json-field-cast?color=%234dc71f)
+[![Packagist Version](https://img.shields.io/packagist/v/think.studio/laravel-json-field-cast)](https://packagist.org/packages/think.studio/laravel-json-field-cast)
+[![Total Downloads](https://img.shields.io/packagist/dt/think.studio/laravel-json-field-cast)](https://packagist.org/packages/think.studio/laravel-json-field-cast)
+[![Build Status](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/badges/build.png?b=main)](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/build-status/main)
+[![Code Coverage](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/?branch=main)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/?branch=main)
 
-Cast json field to object.
+Cast json field to custom object.
 
 ## Installation
 
 Install the package via composer:
 
 ```bash
-composer require yaroslawww/laravel-json-field-cast
+composer require think.studio/laravel-json-field-cast
 ```
 
 ## Usage
 
 ### Out of the box
 
-```injectablephp
+Cast json column to single object
+
+```php
 /**
  *  @property \JsonFieldCast\Json\SimpleJsonField $json_meta
  *  @property \JsonFieldCast\Json\SimpleJsonField $text_meta
- *  @property \JsonFieldCast\Json\ArrayOfJsonObjectsField $array_json_meta
- *  @property \JsonFieldCast\Json\ArrayOfJsonObjectsField $array_text_meta
  */
 class MyModel extends Model
 {
@@ -34,8 +34,6 @@ class MyModel extends Model
         //...
         'json_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
         'text_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
-        'array_json_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
-        'array_text_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
     ];
 }
 
@@ -63,9 +61,39 @@ $myModel->json_meta->toMorph('user', $user);
 $user = $myModel->json_meta->fromMorph('user');
 ```
 
+Cast json column to array of objects
+
+```php
+/**
+ *  @property \JsonFieldCast\Json\ArrayOfJsonObjectsField $array_json_meta
+ *  @property \JsonFieldCast\Json\ArrayOfJsonObjectsField $array_text_meta
+ */
+class MyModel extends Model
+{
+    protected $casts = [
+        //...
+        'array_json_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
+        'array_text_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
+    ];
+}
+
+
+$myModel = MyModel::find(123);
+
+isset($myModel->array_json_meta[2]);
+
+/** @var \JsonFieldCast\Json\JsonObject $item */
+foreach ($myModel->array_json_meta as $item) {
+    $name = $item->getAttribute('name');
+    $date = $item->getDateTimeFromFormat('my-date', 'd/m/y');
+}
+```
+
 ### Custom castable objects
 
-```injectablephp
+For your custom purposes you can use your own custom castable objects
+
+```php
 namespace App\Casts;
 
 use JsonFieldCast\Casts\AbstractMeta;
@@ -79,7 +107,7 @@ class FormMeta extends AbstractMeta
 }
 ```
 
-```injectablephp
+```php
 namespace App\Casts\Json;
 
 use JsonFieldCast\Json\AbstractMeta;
@@ -92,7 +120,7 @@ class FormMeta extends AbstractMeta
 }
 ```
 
-```injectablephp
+```php
 /**
  *  @property \App\Casts\Json\FormMeta $meta
  */
@@ -111,7 +139,7 @@ $form->meta->myCustomMethod();
 
 ### Dynamic castable objects
 
-```injectablephp
+```php
 namespace App\Casts;
 
 use JsonFieldCast\Casts\AbstractMeta;
@@ -125,7 +153,7 @@ class FormMeta extends AbstractMeta
 }
 ```
 
-```injectablephp
+```php
 namespace App\Casts\Json;
 
 use JsonFieldCast\Json\AbstractMeta;
@@ -141,7 +169,7 @@ abstract class AbstractFormMeta extends AbstractMeta
 }
 ```
 
-```injectablephp
+```php
 /**
  *  @property \App\Casts\Json\AbstractFormMeta $meta
  */
