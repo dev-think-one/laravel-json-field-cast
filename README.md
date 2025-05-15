@@ -7,7 +7,12 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/?branch=main)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/?branch=main)
 
-Cast json field to custom object.
+Cast json field to custom object. Compatible with Laravel 9, 10, and 11.
+
+## Requirements
+
+- PHP: ^8.1|^8.2
+- Laravel: ^9.0|^10.0|^11.0
 
 ## Installation
 
@@ -30,11 +35,22 @@ Cast json column to single object
  */
 class MyModel extends Model
 {
+    // Laravel 9/10/11 approach with $casts property
     protected $casts = [
         //...
         'json_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
         'text_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
     ];
+    
+    // Alternative Laravel 11+ approach with casts() method
+    protected function casts(): array
+    {
+        return [
+            //...
+            'json_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
+            'text_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
+        ];
+    }
 }
 
 
@@ -70,11 +86,22 @@ Cast json column to array of objects
  */
 class MyModel extends Model
 {
+    // Laravel 9/10/11 approach with $casts property
     protected $casts = [
         //...
         'array_json_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
         'array_text_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
     ];
+    
+    // Alternative Laravel 11+ approach with casts() method
+    protected function casts(): array
+    {
+        return [
+            //...
+            'array_json_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
+            'array_text_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
+        ];
+    }
 }
 
 
@@ -126,9 +153,18 @@ class FormMeta extends AbstractMeta
  */
 class Form extends Model
 {
+    // Laravel 9/10/11 approach with $casts property
     protected $casts = [
         'meta' => \App\Casts\FormMeta::class,
     ];
+    
+    // Alternative Laravel 11+ approach with casts() method
+    protected function casts(): array
+    {
+        return [
+            'meta' => \App\Casts\FormMeta::class,
+        ];
+    }
 }
 
 
@@ -175,9 +211,18 @@ abstract class AbstractFormMeta extends AbstractMeta
  */
 class Form extends Model
 {
+    // Laravel 9/10/11 approach with $casts property
     protected $casts = [
         'meta' => \App\Casts\FormMeta::class,
     ];
+    
+    // Alternative Laravel 11+ approach with casts() method
+    protected function casts(): array
+    {
+        return [
+            'meta' => \App\Casts\FormMeta::class,
+        ];
+    }
 }
 
 
