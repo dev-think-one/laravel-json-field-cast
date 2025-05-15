@@ -20,7 +20,7 @@ trait HasDateAttributes
 
     public function setNow(string $key, string $format = 'Y-m-d H:i:s'): static
     {
-        return $this->setDateAttribute($key, Carbon::now(), $format);
+        return $this->setDateAttribute($key, Carbon::now()->setTimezone(config('app.timezone')), $format);
     }
 
     public function getDateAttribute(string $key, ?Carbon $default = null): ?Carbon
@@ -28,8 +28,9 @@ trait HasDateAttributes
         $value = $this->getAttribute($key);
         if (is_string($value) && !empty($value)) {
             try {
-                return Carbon::parse($value);
+                return Carbon::parse($value)->setTimezone(config('app.timezone'));
             } catch (InvalidFormatException) {
+                // Fail silently and return default
             }
         }
 
@@ -48,15 +49,17 @@ trait HasDateAttributes
     {
         $value = $this->getAttribute($key);
         if (is_string($value) && !empty($value)) {
-            $formats = Arr::wrap($formats);
+            $formats       = Arr::wrap($formats);
+            $lastException = null;
             foreach ($formats as $format) {
                 try {
-                    return Carbon::createFromFormat($format, $value);
+                    return Carbon::createFromFormat($format, $value)->setTimezone(config('app.timezone'));
                 } catch (InvalidFormatException $e) {
+                    $lastException = $e;
                 }
             }
-            if (isset($e) && ($e instanceof InvalidFormatException)) {
-                throw $e;
+            if ($lastException instanceof InvalidFormatException) {
+                throw $lastException;
             }
         }
 
