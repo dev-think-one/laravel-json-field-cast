@@ -7,12 +7,12 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/?branch=main)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/dev-think-one/laravel-json-field-cast/?branch=main)
 
-Cast json field to custom object. Compatible with Laravel 9, 10, and 11.
+Cast json field to custom object. Compatible with Laravel 9, 10, 11 and 12.
 
 ## Requirements
 
 - PHP: ^8.1|^8.2
-- Laravel: ^9.0|^10.0|^11.0
+- Laravel: ^9.0|^10.0|^11.0|^12.0
 
 ## Installation
 
@@ -35,7 +35,7 @@ Cast json column to single object
  */
 class MyModel extends Model
 {
-    // Laravel 9/10/11 approach with $casts property
+    // Laravel 9-12 approach with $casts property
     protected $casts = [
         //...
         'json_meta'              => \JsonFieldCast\Casts\SimpleJsonField::class,
@@ -86,7 +86,7 @@ Cast json column to array of objects
  */
 class MyModel extends Model
 {
-    // Laravel 9/10/11 approach with $casts property
+    // Laravel 9-12 approach with $casts property
     protected $casts = [
         //...
         'array_json_meta'        => \JsonFieldCast\Casts\ArrayOfJsonObjectsField::class,
@@ -153,7 +153,7 @@ class FormMeta extends AbstractMeta
  */
 class Form extends Model
 {
-    // Laravel 9/10/11 approach with $casts property
+    // Laravel 9-12 approach with $casts property
     protected $casts = [
         'meta' => \App\Casts\FormMeta::class,
     ];
@@ -211,7 +211,7 @@ abstract class AbstractFormMeta extends AbstractMeta
  */
 class Form extends Model
 {
-    // Laravel 9/10/11 approach with $casts property
+    // Laravel 9-12 approach with $casts property
     protected $casts = [
         'meta' => \App\Casts\FormMeta::class,
     ];

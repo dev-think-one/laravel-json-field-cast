@@ -3,6 +3,7 @@
 namespace JsonFieldCast\Tests;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use JsonFieldCast\Json\FileJsonField;
 use JsonFieldCast\Tests\Fixtures\Models\User;
@@ -68,7 +69,7 @@ class FileJsonTest extends TestCase
 
         $this->assertTrue($this->user->json_file->exists());
         $this->assertEquals('my-avatar.jpg', $this->user->json_file->fileName());
-        $this->assertEquals(storage_path('app/my-avatar.jpg'), $this->user->json_file->filePath());
+        $this->assertEquals(Storage::disk()->path('my-avatar.jpg'), $this->user->json_file->filePath());
         $this->assertEquals('/storage/my-avatar.jpg', $this->user->json_file->fileUrl());
         $this->assertInstanceOf(StreamedResponse::class, $this->user->json_file->fileDownload());
     }
